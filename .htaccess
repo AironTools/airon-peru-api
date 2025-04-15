@@ -1,0 +1,14 @@
+RewriteEngine On
+
+# Asegúrate de que el archivo exista
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Reescribe /categorias/valor a/categorias.php?categoria=valor
+RewriteRule ^categorias/([^/]+)/?$ categorias.php?categoria=$1 [QSA,L]
+
+# Reescribe /producto/valor a/producto.php?producto=valor
+RewriteRule ^producto/([^/]+)/?$ producto.php?producto=$1 [QSA,L]
+
+# Reescribe /busqueda/valor a/busqueda.php?busqueda=valor
+RewriteRule ^busqueda/([^/]+)/?$ busqueda.php?q=$1 [QSA,L]

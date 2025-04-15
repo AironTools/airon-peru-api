@@ -33,13 +33,15 @@ $stmt = $pdo->prepare("
 $stmt->execute([$searchTerm, $searchTerm]);
 $productos = $stmt->fetchAll();
 
-// Opcional: formatear los productos
+
+$categoriasFormateadas = array_map('formatCategoria', $categorias);
+
 $productosFormateados = array_map('formatProducto', $productos);
 
 echo json_encode([
     'status' => 'success',
     'data' => [
-        'categorias_similares' => $categorias,
+        'categorias_similares' => $categoriasFormateadas,
         'productos_similares' => $productosFormateados
     ]
 ]);

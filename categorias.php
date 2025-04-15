@@ -1,18 +1,7 @@
 <?php
 require 'db.php';
 require 'functions.php';
-
-// Habilitar CORS para cualquier origen (solo para pruebas)
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Content-Type: application/json');
-
-// Responder preflight OPTIONS si es necesario (opcional para peticiones complejas)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit;
-}
+require 'cors.php';
 
 // Obtener el slug desde la URL
 $categoria_slug = $_GET['categoria'] ?? null;

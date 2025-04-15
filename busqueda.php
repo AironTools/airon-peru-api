@@ -10,22 +10,27 @@ if (empty($termino)) {
     exit;
 }
 
-// Prepara el término para usarlo en LIKE (añade % para coincidencias parciales)
-$searchTerm = '%' . $termino . '%';
+// Prepara el término para usarlo en la búsqueda FULLTEXT
+$searchTerm = $termino;
 
-// Buscar categorías similares
-$stmt = $pdo->prepare("SELECT * FROM categorias WHERE nombre LIKE ? OR url LIKE ?");
+// Buscar categorías similares usando FULLTEXT
+$stmt = $pdo->prepare("
+    SELECT *, MATCH(nombre, url) AGAINST (? IN NATURAL LANGUAGE MODE) AS relevancia 
+    FROM categorias 
+    WHERE MATCH(nombre, url) AGAINST (? IN NATURAL LANGUAGE MODE)
+    ORDER BY relevancia DESC
+");
 $stmt->execute([$searchTerm, $searchTerm]);
 $categorias = $stmt->fetchAll();
 
-// Buscar productos similares (por nombre, descripción o ventajas)
+// Buscar productos similares usando FULLTEXT (por nombre, descripción o ventajas)
 $stmt = $pdo->prepare("
-    SELECT * FROM productos 
-    WHERE nombre LIKE ? 
-       OR descripcion LIKE ?
-       OR ventajas LIKE ?
+    SELECT *, MATCH(nombre, descripcion) AGAINST (? IN NATURAL LANGUAGE MODE) AS relevancia 
+    FROM productos
+    WHERE MATCH(nombre, descripcion) AGAINST (? IN NATURAL LANGUAGE MODE)
+    ORDER BY relevancia DESC
 ");
-$stmt->execute([$searchTerm, $searchTerm, $searchTerm]);
+$stmt->execute([$searchTerm, $searchTerm]);
 $productos = $stmt->fetchAll();
 
 // Opcional: formatear los productos

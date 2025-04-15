@@ -22,7 +22,7 @@ if (!$categoria) {
 }
 
 // 2. Obtener los productos que pertenecen a esa categoría
-$stmt = $pdo->prepare("SELECT nombre, url, url_image, resumen, descripcion, complementos FROM productos WHERE idcategoria = ?");
+$stmt = $pdo->prepare("SELECT nombre, url, url_image, resumen, descripcion, video_url, complementos FROM productos WHERE idcategoria = ?");
 $stmt->execute([$categoria['id']]);
 $productos = $stmt->fetchAll();
 

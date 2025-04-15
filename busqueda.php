@@ -14,13 +14,14 @@ if (empty($termino)) {
 $searchTerm = $termino;
 
 // Buscar categorías similares usando FULLTEXT
+$search = $searchTerm . '*';
 $stmt = $pdo->prepare("
-    SELECT *, MATCH(nombre, url) AGAINST (? IN NATURAL LANGUAGE MODE) AS relevancia 
+    SELECT *, MATCH(nombre, url) AGAINST (? IN BOOLEAN MODE) AS relevancia 
     FROM categorias 
-    WHERE MATCH(nombre, url) AGAINST (? IN NATURAL LANGUAGE MODE)
+    WHERE MATCH(nombre, url) AGAINST (? IN BOOLEAN MODE)
     ORDER BY relevancia DESC
 ");
-$stmt->execute([$searchTerm, $searchTerm]);
+$stmt->execute([$search, $search]);
 $categorias = $stmt->fetchAll();
 
 // Buscar productos similares usando FULLTEXT (por nombre, descripción o ventajas)
@@ -30,7 +31,7 @@ $stmt = $pdo->prepare("
     WHERE MATCH(nombre, descripcion) AGAINST (? IN NATURAL LANGUAGE MODE)
     ORDER BY relevancia DESC
 ");
-$stmt->execute([$searchTerm, $searchTerm]);
+$stmt->execute([$search, $search]);
 $productos = $stmt->fetchAll();
 
 
